@@ -29,7 +29,7 @@ userRouter.post("/signin", async (req, res):Promise<any> => {
     msg: "wrong password",
   })
 
-  const token = jwt.sign(response.rows[0].username,process.env.JWT_SECRET || "")
+  const token = jwt.sign(response.rows[0].id,process.env.JWT_SECRET || "")
   return res.send({
     msg: "signin",
     token
@@ -57,7 +57,7 @@ userRouter.post("/signup", async (req, res):Promise<any> => {
   }
   const newUser = await pool.query(userQuery)
 
-  const token = jwt.sign(newUser.rows[0].username,process.env.JWT_SECRET || "")
+  const token = jwt.sign(newUser.rows[0].id,process.env.JWT_SECRET || "")
   return res.send({
     msg: "login",
     token

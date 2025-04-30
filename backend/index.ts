@@ -3,6 +3,9 @@ import { createServer } from 'node:http';
 import { Server } from 'socket.io';
 import jwt from "jsonwebtoken"
 import userRouter from './routes/userRouter';
+import { config } from "dotenv"
+import path from "path"
+config({ path: path.resolve(__dirname, "../.env") });
 
 const app = express();
 const httpServer = createServer(app);
