@@ -26,27 +26,28 @@ io.use((socket, next) => {
     socket.data.userId = userId
     next()
   } catch (err) {
-    // sending error
+    socket.emit("auth error",err)
   }
 }).on('connection', (socket) => {
-  let roomName = ""
+  let roomName = "";
+  const userId = socket.data.userId
   socket.on('disconnect', () => {
     console.log('user disconnected');
   });
 
-  socket.on("send message", (receiverId: number, senderId: number, message: string) => {
-    sendMessage(receiverId, senderId, message)
+  socket.on("send message", (receiverId: number, message: string) => {
+    sendMessage(userId, receiverId, message)
   })
 
-  socket.on("get message", (userId: number) => {
+  socket.on("get message", () => {
     getMessage(userId)
   })
 
-  socket.on("get message with user", (userId: number, userId2) => {
+  socket.on("get message with user", (userId2) => {
     getMessageWithUser(userId, userId2)
   })
 
-  socket.on("join room", (userId: number, userId2: number) => {
+  socket.on("join room", (userId2: number) => {
     roomName = userId < userId2 ? userId.toString() + userId2.toString() : userId2.toString() + userId.toString()
     socket.join(roomName)
   })
