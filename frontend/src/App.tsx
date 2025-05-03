@@ -1,15 +1,23 @@
-import { io } from "socket.io-client";
 import './App.css'
+import { BrowserRouter, Routes,Route } from "react-router-dom";
+import Homepage from "./pages/Homepage";
+import { RecoilRoot } from "recoil";
+import Signin from './pages/Signin';
+import Signup from './pages/Signup';
 
 function App() {
-  const socket = io('http://localhost:3000');
+ 
   return (
-    <>
-      <div>
-        hi there
-      </div>
-      {socket}
-    </>
+    <RecoilRoot>
+      <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Homepage/>} />
+        <Route path="/home" element={<Homepage/>} />
+        <Route path="/signin" element={<Signin/>} />
+        <Route path="/signup" element={<Signup/>} />
+      </Routes>
+     </BrowserRouter>
+    </RecoilRoot>
   )
 }
 
