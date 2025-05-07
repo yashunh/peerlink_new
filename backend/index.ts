@@ -15,6 +15,7 @@ const io = new Server(httpServer);
 app.use(express.json())
 app.use(userRouter)
 
+let users = new Map<number,string>()
 
 io.use((socket, next) => {
   try {
@@ -31,12 +32,24 @@ io.use((socket, next) => {
 }).on('connection', (socket) => {
   let roomName = "";
   const userId = socket.data.userId
+  users.set(userId,socket.id)
   socket.on('disconnect', () => {
+    users.delete(userId)
     console.log('user disconnected');
   });
 
-  socket.on("send message", (receiverId: number, message: string) => {
+  socket.on("send message", async(receiverId: number, message: string) => {
     sendMessage(userId, receiverId, message)
+    if(users.has(receiverId)){
+      const sockets = await io.fetchSockets()
+      let flag = true
+      for(let i of sockets){
+        if(i.id == users.get(receiverId)){
+          i.emit("recieve message",message)
+          socket.emit("message send",message)
+        }
+      }
+    }
   })
 
   socket.on("get message", () => {
@@ -48,7 +61,7 @@ io.use((socket, next) => {
   })
 
   socket.on("join room", (userId2: number) => {
-    roomName = userId < userId2 ? userId.toString() + userId2.toString() : userId2.toString() + userId.toString()
+    roomName = userId < userId2 ? userId.toString() + "x" + userId2.toString() : userId2.toString() + "x" + userId.toString()
     socket.join(roomName)
   })
 });
