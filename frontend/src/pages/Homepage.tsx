@@ -1,30 +1,34 @@
 import { useEffect } from "react";
 import { io } from "socket.io-client";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom"
+import Navbar from "../components/Navbar";
 
-export default function Homepage(){
-    const navigate = useNavigate()
-    let token = window.localStorage.getItem("token")
+export default function Homepage() {
+  const navigate = useNavigate()
+  let token = window.localStorage.getItem("token")
 
-    if(!token){
-        navigate("/signin");
+  if (!token) {
+    navigate("/signin");
+  }
+  let socket;
+  useEffect(() => {
+    try {
+      socket = io('http://localhost:3000', {
+        auth: {
+          token: token
+        }
+      });
+    } catch (err) {
+      window.localStorage.removeItem("token")
+      navigate("/signin");
     }
-    let socket;
-    useEffect(()=>{
-      try{
-        socket = io('http://localhost:3000',{
-          auth: {
-            token: token
-          }
-        });
-      }catch(err){
-        window.localStorage.setItem("token", "")
-        navigate("/signin");
-      }
-    },[])
-    return (
-        <div>
-    
-        </div>
-    )
+  }, [])
+
+  return (
+    <div>
+      <div className="bg-black">
+        <Navbar/>
+      </div>
+    </div>
+  )
 }
