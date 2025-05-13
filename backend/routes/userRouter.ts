@@ -9,9 +9,10 @@ const userRouter = Router()
 config({ path: path.resolve(__dirname, "../../.env") });
 
 userRouter.post("/signin", async (req, res):Promise<any> => {
-  const { success } = signinSchema.safeParse(req.body);
-  if (!success) return res.status(400).send({
+  const result = signinSchema.safeParse(req.body.inputs);
+  if (!result.success) return res.status(400).send({
     msg: "Invalid Inputs",
+    result
   })
 
   const query = {
@@ -37,9 +38,10 @@ userRouter.post("/signin", async (req, res):Promise<any> => {
 })
 
 userRouter.post("/signup", async (req, res):Promise<any> => {
-  const { success } = signupSchema.safeParse(req.body);
-  if (!success) return res.status(400).send({
+  const result = signupSchema.safeParse(req.body.inputs);
+  if (!result.success) return res.status(400).send({
     msg: "Invalid Inputs",
+    result
   })
   const query = {
     text: "SELECT * FROM users WHERE username = $1",

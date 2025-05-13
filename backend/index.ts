@@ -6,12 +6,25 @@ import userRouter from './routes/userRouter';
 import { config } from "dotenv"
 import path from "path"
 import { getMessage, getMessageWithUser, sendMessage } from './messages';
+import cors from "cors"
 
 config({ path: path.resolve(__dirname, "../.env") });
 
 const app = express();
 const httpServer = createServer(app);
-const io = new Server(httpServer);
+app.use(cors({
+  origin: 'http://localhost:5173',
+  methods: ['GET', 'POST'],
+  credentials: true
+}));
+
+const io = new Server(httpServer, {
+  cors: {
+    origin: 'http://localhost:5173',
+    methods: ['GET', 'POST'],
+    credentials: true
+  }
+});
 app.use(express.json())
 app.use(userRouter)
 
