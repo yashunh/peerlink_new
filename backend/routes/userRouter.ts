@@ -1,4 +1,4 @@
-import { Router } from "express";
+import { ErrorRequestHandler, Router } from "express";
 import { signinSchema, signupSchema } from "../zod";
 import jwt from "jsonwebtoken"
 import { config } from "dotenv"
@@ -10,23 +10,24 @@ config({ path: path.resolve(__dirname, "../../.env") });
 
 userRouter.post("/signin", async (req, res):Promise<any> => {
   const result = signinSchema.safeParse(req.body.inputs);
-  if (!result.success) return res.status(400).send({
+  if (!result.success) return res.send({
     msg: "Invalid Inputs",
     result
   })
 
+  const{username, password} = req.body.inputs
   const query = {
     text: "SELECT * FROM users WHERE username = $1",
-    values: [req.body.username]
+    values: [username]
   }
 
   const response = await pool.query(query)
 
-  if(!response.rows[0]) return res.status(404).send({
+  if(!response.rows[0]) return res.send({
     msg: "User does not exist",
   })
 
-  if(req.body.password !== response.rows[0].password) return res.status(400).send({
+  if(password !== response.rows[0].password) return res.status(400).send({
     msg: "wrong password",
   })
 
@@ -39,13 +40,14 @@ userRouter.post("/signin", async (req, res):Promise<any> => {
 
 userRouter.post("/signup", async (req, res):Promise<any> => {
   const result = signupSchema.safeParse(req.body.inputs);
-  if (!result.success) return res.status(400).send({
+  if (!result.success) return res.send({
     msg: "Invalid Inputs",
     result
   })
+  const{username, password, email} = req.body.inputs
   const query = {
     text: "SELECT * FROM users WHERE username = $1",
-    values: [req.body.username]
+    values: [username]
   }
 
   const response = await pool.query(query)
@@ -55,7 +57,7 @@ userRouter.post("/signup", async (req, res):Promise<any> => {
 
   const userQuery = {
     text: "INSERT INTO users(username, email, password) VALUES ($1, $2, $3) RETURNING *",
-    values: [req.body.username,req.body.email,req.body.password]
+    values: [username,email,password]
   }
   const newUser = await pool.query(userQuery)
 
@@ -65,5 +67,13 @@ userRouter.post("/signup", async (req, res):Promise<any> => {
     token
   })
 })
+
+userRouter.use(((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).send({
+        msg: 'Something broke!',
+        err
+    });
+}) as ErrorRequestHandler)
 
 export default userRouter

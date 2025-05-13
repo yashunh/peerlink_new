@@ -5,11 +5,14 @@ import Navbar from "../components/Navbar";
 
 export default function Homepage() {
   const navigate = useNavigate()
-  let token = window.localStorage.getItem("token")
-
-  if (!token) {
-    navigate("/signin");
-  }
+  let token: string;
+  useEffect(() => {
+    token = window.localStorage.getItem("token")?.toString() || "Unknown"
+    if (!token || token == "Unknown") {
+      window.localStorage.removeItem("token")
+      navigate("/signin");
+    }
+  },[])
   let socket;
   useEffect(() => {
     try {
@@ -27,7 +30,7 @@ export default function Homepage() {
   return (
     <div>
       <div className="bg-black">
-        <Navbar/>
+        <Navbar />
       </div>
     </div>
   )
