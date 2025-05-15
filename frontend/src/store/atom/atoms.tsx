@@ -9,3 +9,8 @@ export const messageAtom = atom({
     key: "messageAtom",
     default: []
 })
+
+export const contactAtom = atom({
+    key: "contactAtom",
+    default: ["abc","def","ghi"]
+})
