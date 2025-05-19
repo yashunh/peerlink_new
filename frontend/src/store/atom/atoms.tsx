@@ -1,16 +1,37 @@
-import { atom } from "recoil";
+import { atom } from "jotai"
 
-export const tokenAtom = atom({
-    key: "tokenAtom",
-    default: window.localStorage.getItem("token")
-})
+type Contact = {
+    id: number,
+    name: string,
+    lastMessage?: string,
+    lastMessageTime: Date
+}
 
-export const messageAtom = atom({
-    key: "messageAtom",
-    default: []
-})
+export const tokenAtom = atom(window.localStorage.getItem("token"))
 
-export const contactAtom = atom({
-    key: "contactAtom",
-    default: ["abc","def","ghi"]
-})
+export const messageAtom = atom([])
+
+export const contactAtom = atom<Contact[]>([{
+    id: 1,
+    name: "abc",
+    lastMessage: "bye",
+    lastMessageTime: new Date()
+},{
+    id: 2,
+    name: "def",
+    lastMessage: "gn",
+    lastMessageTime: new Date()
+},{
+    id: 3,
+    name: "ghi",
+    lastMessage: "see yeah",
+    lastMessageTime: new Date()
+}])
+
+export const filterContactAtom = atom(
+    (get) => {
+        return get(contactAtom).sort((a,b)=>{
+            return a.lastMessageTime.getTime() - b.lastMessageTime.getTime()
+        }).reverse()
+    }
+)

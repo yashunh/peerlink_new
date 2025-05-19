@@ -2,8 +2,8 @@ import { io } from "socket.io-client";
 import { useNavigate } from "react-router-dom"
 import Navbar from "../components/Navbar";
 import Contact from "../components/Contact";
-// import { useSetRecoilState } from "recoil";
-// import { contactAtom } from "../store/atom/atoms";
+import { useAtom } from "jotai";
+import { contactAtom } from "../store/atom/atoms";
 
 export default function Homepage() {
   const navigate = useNavigate()
@@ -28,12 +28,12 @@ export default function Homepage() {
     
   })
 
-  // const setContacts = useSetRecoilState(contactAtom)
+  const [,setContacts] = useAtom(contactAtom)
 
-  // // socket?.emit("get contact")
-  // // socket?.on("set contact", (contacts)=>{
-  // //   setContacts(contacts)
-  // // })
+  socket?.emit("get contact")
+  socket?.on("set contact", (contacts)=>{
+    setContacts(contacts)
+  })
   return (
     <div>
       <div className="bg-black min-h-screen">
