@@ -1,18 +1,26 @@
-import { io } from "socket.io-client";
+import io from "socket.io-client";
 import { useNavigate } from "react-router-dom"
 import Navbar from "../components/Navbar";
 import Contact from "../components/Contact";
 import { useAtom } from "jotai";
 import { contactAtom } from "../store/atom/atoms";
+import Chat from "../components/Chat";
+
+type Contact = {
+    id: number,
+    name: string,
+    lastMessage?: string,
+    lastMessageTime: Date
+}
 
 export default function Homepage() {
   const navigate = useNavigate()
+  let socket
   let token = window.localStorage.getItem("token") || "Unknown"
     if (!token || token == "Unknown") {
       window.localStorage.removeItem("token")
       navigate("/signin")
     }
-  let socket;
      try {
       socket = io('http://localhost:3000', {
         auth: {
@@ -31,19 +39,19 @@ export default function Homepage() {
   const [,setContacts] = useAtom(contactAtom)
 
   socket?.emit("get contact")
-  socket?.on("set contact", (contacts)=>{
+  socket?.on("set contact", (contacts: Contact[])=>{
     setContacts(contacts)
   })
   return (
     <div>
       <div className="bg-black min-h-screen">
-        <Navbar />
+        <Navbar/>
         <div className="grid grid-cols-6">
           <div className="col-span-1 flex flex-col">
-            <Contact/>
+            <Contact socket={socket}/>
           </div>
           <div className="col-span-5 bg-amber-300">
-            chat
+            <Chat socket={socket}/>
           </div>
         </div>
       </div>

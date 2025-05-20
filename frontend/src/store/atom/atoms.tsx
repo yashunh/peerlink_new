@@ -7,9 +7,48 @@ type Contact = {
     lastMessageTime: Date
 }
 
+type Message = {
+    createdAt: Date,
+    sender: number,
+    reciever: number,
+    content: string,
+}
+
 export const tokenAtom = atom(window.localStorage.getItem("token"))
 
-export const messageAtom = atom([])
+export const userInfo = atom({
+    id: 4,
+    name: "xyz"
+})
+
+export const messageAtom = atom<Message[]>([{
+    createdAt: new Date(),
+    sender: 4,
+    reciever: 2,
+    content: "hi there",
+},{
+    createdAt: new Date(),
+    sender: 2,
+    reciever: 4,
+    content: "hello",
+},{
+    createdAt: new Date(),
+    sender: 4,
+    reciever: 2,
+    content: "how are you",
+},{
+    createdAt: new Date(),
+    sender: 3,
+    reciever: 4,
+    content: "hi",
+},{
+    createdAt: new Date(),
+    sender: 4,
+    reciever: 1,
+    content: "hlo",
+}])
+
+export const contactIdAtom = atom()
 
 export const contactAtom = atom<Contact[]>([{
     id: 1,
