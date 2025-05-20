@@ -1,10 +1,13 @@
 import { FaSearch } from "react-icons/fa";
 import Avatar from "./Avatar";
+import { useAtom } from "jotai";
+import { userAtom } from "../store/atom/atoms";
 
 export default function Navbar() {
+    const [user] = useAtom(userAtom)
     return (
         <div>
-            <div className="flex justify-between items-center border rounded-md px-10 py-4 border-slate-800">
+            <div className="flex justify-between items-center border rounded-md px-10 border-slate-800">
                 <div className="text-3xl font-bold text-slate-50">
                     PeerLink
                 </div>
@@ -14,14 +17,17 @@ export default function Navbar() {
                         <FaSearch />
                     </div>
                 </div>
-                <div>
-                    <Avatar />
+                <div className="pt-1">
+                    <Avatar name={user?.name} />
+                    <div className="text-white flex justify-center">
+                        {user?.name}
+                    </div>
                 </div>
             </div>
         </div>
     );
 }
 
-function search(){
+function search() {
     window.alert("search")
 }
