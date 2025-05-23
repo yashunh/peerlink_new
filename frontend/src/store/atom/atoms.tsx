@@ -21,6 +21,11 @@ export const userAtom = atom({
     name: "xyz"
 })
 
+export const sendMessageAtom = atom({
+    receiverId: 0,
+    content: ''
+})
+
 export const messageAtom = atom<Message[]>([{
     createdAt: new Date(),
     sender: 4,
@@ -56,7 +61,7 @@ export const sortedMessageAtom = atom(
     }
 )
 
-export const connectionAtom = atom({
+export const recieverAtom = atom({
     id: 2,
     name: "ghi"
 })

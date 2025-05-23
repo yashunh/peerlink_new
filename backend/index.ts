@@ -52,13 +52,12 @@ io.use((socket, next) => {
   });
 
   socket.on("send message", async(receiverId: number, message: string) => {
-    sendMessage(userId, receiverId, message)
+    const result = await sendMessage(userId, receiverId, message)
     if(users.has(receiverId)){
       const sockets = await io.fetchSockets()
-      let flag = true
       for(let i of sockets){
         if(i.id == users.get(receiverId)){
-          i.emit("recieve message",message)
+          i.emit("recieve message",result.rows,userId)
           socket.emit("message send",message)
         }
       }

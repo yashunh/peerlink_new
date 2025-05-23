@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom"
 import Navbar from "../components/Navbar";
 import Contact from "../components/Contact";
 import { useAtom } from "jotai";
-import { contactAtom } from "../store/atom/atoms";
+import { contactAtom, messageAtom, tokenAtom } from "../store/atom/atoms";
 import Chat from "../components/Chat";
 
 type Contact = {
@@ -13,10 +13,19 @@ type Contact = {
   lastMessageTime: Date
 }
 
+type Message = {
+    createdAt: Date,
+    sender: number,
+    reciever: number,
+    content: string,
+}
+
 export default function Homepage() {
   const navigate = useNavigate()
   let socket
-  let token = window.localStorage.getItem("token") || "Unknown"
+  
+  const[token] = useAtom(tokenAtom)
+  const[message,setMessage] = useAtom(messageAtom)
   if (!token || token == "Unknown") {
     window.localStorage.removeItem("token")
     navigate("/signin")
@@ -32,8 +41,8 @@ export default function Homepage() {
     navigate("/signin");
   }
 
-  socket?.on("message", () => {
-
+  socket?.on("message recieved", (msg: Message) => {
+    // setMessage(...message,msg)
   })
 
   const [, setContacts] = useAtom(contactAtom)

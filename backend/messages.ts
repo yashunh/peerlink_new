@@ -2,13 +2,13 @@ import { pool } from "./db";
 
 export async function sendMessage(senderId: number, receiverId: number, message: string) {
     const query = {
-        text: "INSERT INTO messages(sender_id, receiver_id, content) VALUES ($1, $2, $3)",
+        text: "INSERT INTO messages(senderId, receiverId, content) VALUES ($1, $2, $3)",
         values: [senderId, receiverId, message]
     };
 
     try {
         const result = await pool.query(query);
-        return result.rowCount === 1;
+        return result;
     } catch (err) {
         console.error("Error sending message:", err);
         throw err;
@@ -17,7 +17,7 @@ export async function sendMessage(senderId: number, receiverId: number, message:
 
 export async function getMessage(userId: number) {
     const query = {
-        text: "SELECT * FROM messages WHERE sender_id = $1 OR receiver_id = $1",
+        text: "SELECT * FROM messages WHERE senderId = $1 OR receiverId = $1",
         values: [userId]
     };
 
@@ -32,7 +32,7 @@ export async function getMessage(userId: number) {
 
 export async function getMessageWithUser(userId1: number,userId2: number) {
     const query = {
-        text: "SELECT * FROM messages WHERE sender_id = $1 OR receiver_id = $2 OR sender_id = $2 OR receiver_id = $1",
+        text: "SELECT * FROM messages WHERE senderId = $1 OR receiverId = $2 OR senderId = $2 OR receiverId = $1",
         values: [userId1,userId2]
     };
 

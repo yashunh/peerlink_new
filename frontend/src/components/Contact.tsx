@@ -1,7 +1,7 @@
 import { FaSearch } from "react-icons/fa";
 import Avatar from "./Avatar";
 import { useAtom } from "jotai";
-import { connectionAtom, sortedContactAtom } from "../store/atom/atoms";
+import { recieverAtom, sortedContactAtom } from "../store/atom/atoms";
 type Contact = {
     id: number,
     name: string,
@@ -10,7 +10,7 @@ type Contact = {
 }
 export default function Contact(socket: any) {
     const [contacts] = useAtom<Contact[]>(sortedContactAtom)
-    const [, setConnection] = useAtom(connectionAtom)
+    const [, setReciever] = useAtom(recieverAtom)
     return (
         <div className="m-1 border-r border-slate-800 h-[calc(100vh-83px)] overflow-y-auto overflow-x-hidden">
             <div className="grid grid-cols-12 text-white border rounded-2xl border-slate-800 justify-enter items-center px-2">
@@ -21,7 +21,7 @@ export default function Contact(socket: any) {
             </div>
             <div className="my-2">
                 {contacts?.map((contact) => <div className="flex mb-2 border-b border-slate-900" key={contact.id} onClick={async () => {
-                    setConnection({
+                    setReciever({
                         name: contact.name,
                         id: contact.id
                     })
