@@ -2,16 +2,18 @@ import { useNavigate } from "react-router-dom"
 import Navbar from "../components/Navbar"
 import axios from "axios"
 import { useEffect, useState } from "react"
+import { useAtom } from "jotai"
+import { tokenAtom, userAtom } from "../store/atom/atoms"
 
 export default function Signin() {
     const navigate = useNavigate()
-    let token: string;
-    useEffect(() => {
-        token = window.localStorage.getItem("token")?.toString() || "Unknown"
-        if (token && token != "Unknown") {
-            navigate("/home");
-        }
-    }, [])
+    const [,setUser] = useAtom(userAtom)
+        const [token,setToken] = useAtom(tokenAtom)
+        useEffect(() => {
+            if (token && token != "Unknown") {
+                navigate("/home");
+            }
+        }, [])
     const [inputs, setInputs] = useState({
         username: "",
         password: ""
@@ -64,6 +66,8 @@ export default function Signin() {
                                         }
                                         else {
                                             window.localStorage.setItem("token", response.data.token)
+                                            setToken(response.data.token)
+                                            setUser(response.data.user)
                                             navigate("/home")
                                         }
                                     } catch (error) {

@@ -14,12 +14,14 @@ type Message = {
     content: string,
 }
 
+type User = {
+    name: string,
+    id: number
+}
+
 export const tokenAtom = atom(window.localStorage.getItem("token"))
 
-export const userAtom = atom({
-    id: 4,
-    name: "xyz"
-})
+export const userAtom = atom<User>()
 
 export const sendMessageAtom = atom({
     receiverId: 0,
@@ -61,10 +63,7 @@ export const sortedMessageAtom = atom(
     }
 )
 
-export const recieverAtom = atom({
-    id: 2,
-    name: "ghi"
-})
+export const recieverAtom = atom<User>()
 
 export const contactAtom = atom<Contact[]>([{
     id: 1,
@@ -90,3 +89,5 @@ export const sortedContactAtom = atom(
         }).reverse()
     }
 )
+
+export const searchAtom = atom<User[]>([])

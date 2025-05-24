@@ -14,18 +14,18 @@ type Contact = {
 }
 
 type Message = {
-    createdAt: Date,
-    sender: number,
-    reciever: number,
-    content: string,
+  createdAt: Date,
+  sender: number,
+  reciever: number,
+  content: string,
 }
 
 export default function Homepage() {
   const navigate = useNavigate()
   let socket
-  
-  const[token] = useAtom(tokenAtom)
-  const[message,setMessage] = useAtom(messageAtom)
+
+  const [token] = useAtom(tokenAtom)
+  const [message, setMessage] = useAtom(messageAtom)
   if (!token || token == "Unknown") {
     window.localStorage.removeItem("token")
     navigate("/signin")
@@ -40,9 +40,11 @@ export default function Homepage() {
     window.localStorage.removeItem("token")
     navigate("/signin");
   }
-
+  socket?.on("set messages", (messages: Message[]) => {
+    setMessage(messages)
+  })
   socket?.on("message recieved", (msg: Message) => {
-    // setMessage(...message,msg)
+    setMessage([...message, msg])
   })
 
   const [, setContacts] = useAtom(contactAtom)
@@ -54,7 +56,7 @@ export default function Homepage() {
   return (
     <div>
       <div className="bg-black min-h-screen">
-        <Navbar />
+        <Navbar socket={socket}/>
         <div className="grid grid-cols-6">
           <div className="col-span-1 flex flex-col">
             <Contact socket={socket} />

@@ -5,7 +5,7 @@ import jwt from "jsonwebtoken"
 import userRouter from './routes/userRouter';
 import { config } from "dotenv"
 import path from "path"
-import { getMessage, getMessageWithUser, sendMessage } from './messages';
+import { getContacts, getMessage, getMessageWithUser, sendMessage } from './messages';
 import cors from "cors"
 
 config({ path: path.resolve(__dirname, "../.env") });
@@ -64,16 +64,22 @@ io.use((socket, next) => {
     }
   })
 
-  socket.on("get message", () => {
-    getMessage(userId)
+  // socket.on("get message", () => {
+  //   getMessage(userId)
+  // })
+
+  socket.on("get contacts",async() => {
+    const result = await getContacts(userId)
+    socket.emit("set contacts",result.rows)
   })
 
-  socket.on("get message with user", (userId2) => {
-    getMessageWithUser(userId, userId2)
+  socket.on("get message with user", async(receiverId) => {
+    const result = await getMessageWithUser(userId, receiverId)
+    socket.emit("set messages",result.rows)
   })
 
-  socket.on("join room", (userId2: number) => {
-    roomName = userId < userId2 ? userId.toString() + "x" + userId2.toString() : userId2.toString() + "x" + userId.toString()
+  socket.on("join room", (receiverId: number) => {
+    roomName = userId < receiverId ? userId.toString() + "x" + receiverId.toString() : receiverId.toString() + "x" + userId.toString()
     socket.join(roomName)
   })
 });

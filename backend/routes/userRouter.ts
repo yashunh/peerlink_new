@@ -34,7 +34,8 @@ userRouter.post("/signin", async (req, res):Promise<any> => {
   const token = jwt.sign(response.rows[0].id,process.env.JWT_SECRET || "")
   return res.send({
     msg: "signin",
-    token
+    token,
+    user: response.rows[0]
   })
 })
 
@@ -63,8 +64,9 @@ userRouter.post("/signup", async (req, res):Promise<any> => {
 
   const token = jwt.sign(newUser.rows[0].id,process.env.JWT_SECRET || "")
   return res.send({
-    msg: "login",
-    token
+    msg: "signup",
+    token,
+    user: response.rows[0]
   })
 })
 
