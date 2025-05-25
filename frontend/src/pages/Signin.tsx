@@ -66,6 +66,7 @@ export default function Signin() {
                                         }
                                         else {
                                             window.localStorage.setItem("token", response.data.token)
+                                            console.log(response.data)
                                             setToken(response.data.token)
                                             setUser(response.data.user)
                                             navigate("/home")

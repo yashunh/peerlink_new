@@ -1,15 +1,16 @@
 import Avatar from "./Avatar";
 import { useAtom } from "jotai";
 import { recieverAtom, sortedContactAtom } from "../store/atom/atoms";
+import { socket } from "../pages/Homepage";
 
 type Contact = {
     id: number,
     name: string,
-    lastMessage?: string,
-    lastMessageTime: Date
+    lastmessage?: string,
+    lastmessagetime: Date
 }
 
-export default function Contact(socket: any) {
+export default function Contact() {
     const [contacts] = useAtom<Contact[]>(sortedContactAtom)
     const [receiver, setReciever] = useAtom(recieverAtom)
     return (
@@ -26,8 +27,8 @@ export default function Contact(socket: any) {
                         name: contact.name,
                         id: contact.id
                     })
-                    socket.emit("join room", receiver.id)
-                    socket.emit("get message with user", receiver.id)
+                    // socket?.emit("join room", receiver?.id)
+                    socket?.emit("get message with user", receiver?.id)
                 }}>
                     <div className="">
                         <Avatar name={contact.name} />
@@ -37,7 +38,7 @@ export default function Contact(socket: any) {
                             {contact.name}
                         </div>
                         <div className="text-slate-400 text-xs flex justify-center items-center mx-2">
-                            {contact.lastMessage}
+                            {contact.lastmessage}
                         </div>
                     </div>
                 </div>)}

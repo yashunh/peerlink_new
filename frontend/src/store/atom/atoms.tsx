@@ -3,8 +3,8 @@ import { atom } from "jotai"
 type Contact = {
     id: number,
     name: string,
-    lastMessage?: string,
-    lastMessageTime: Date
+    lastmessage?: string,
+    lastmessagetime: Date
 }
 
 type Message = {
@@ -68,24 +68,24 @@ export const recieverAtom = atom<User>()
 export const contactAtom = atom<Contact[]>([{
     id: 1,
     name: "abc",
-    lastMessage: "bye",
-    lastMessageTime: new Date()
+    lastmessage: "bye",
+    lastmessagetime: new Date()
 }, {
     id: 2,
     name: "def",
-    lastMessage: "gn",
-    lastMessageTime: new Date()
+    lastmessage: "gn",
+    lastmessagetime: new Date()
 }, {
     id: 3,
     name: "ghi",
-    lastMessage: "see yeah",
-    lastMessageTime: new Date()
+    lastmessage: "see yeah",
+    lastmessagetime: new Date()
 }])
 
 export const sortedContactAtom = atom(
     (get) => {
         return get(contactAtom).sort((a, b) => {
-            return a.lastMessageTime.getTime() - b.lastMessageTime.getTime()
+            return a.lastmessagetime.getTime() - b.lastmessagetime.getTime()
         }).reverse()
     }
 )
