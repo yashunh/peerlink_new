@@ -7,7 +7,7 @@ import { config } from "dotenv"
 import path from "path"
 import { getMessageWithUser, sendMessage } from './messages';
 import cors from "cors"
-import { getContacts, searchContact } from './contact';
+import { getContacts, getUser, searchContact } from './contact';
 
 config({ path: path.resolve(__dirname, "../.env") });
 
@@ -41,12 +41,15 @@ io.use((socket, next) => {
     socket.data.userId = userId
     next()
   } catch (err) {
-    console.log("err: ",err)
-    socket.emit("auth error", err)
+    console.log("err: "+err)
   }
 }).on('connection', (socket) => {
-  let roomName = "";
-  const userId = socket.data.userId
+   if (!socket.data.userId) {
+    socket.emit("auth error", "Missing userId");
+    return;
+  }
+  // let roomName = "";
+  const userId = parseInt(socket.data.userId)
   users.set(userId, socket.id)
   socket.on('disconnect', () => {
     users.delete(userId)
@@ -55,7 +58,9 @@ io.use((socket, next) => {
 
   socket.on("send message", async (receiverId: number, message: string) => {
     const result = await sendMessage(userId, receiverId, message)
+    console.log(result)
     if (users.has(receiverId)) {
+      console.log("online")
       const sockets = await io.fetchSockets()
       for (let i of sockets) {
         if (i.id == users.get(receiverId)) {
@@ -83,6 +88,11 @@ io.use((socket, next) => {
   socket.on("search user", async (username: string) => {
     const result = await searchContact(username)
     socket.emit("found user", result)
+  })
+
+  socket.on("get user", async()=>{
+    const result = await getUser(userId)
+    socket.emit("set user", result)
   })
 
   // socket.on("join room", (receiverId: number) => {

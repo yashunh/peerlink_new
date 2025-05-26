@@ -3,3 +3,4 @@ dist
 .env
 test.ts
 test2.ts
+test1.js

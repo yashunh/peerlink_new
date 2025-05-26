@@ -9,8 +9,8 @@ export async function sendMessage(userId: number, receiverId: number, message: s
     try {
         await pool.query(query);
         const msg = {
-            senderId: userId,
-            receiverId: receiverId,
+            sender: userId,
+            receiver: receiverId,
             content: message,
             createdAt: new Date() 
         }
@@ -38,7 +38,7 @@ export async function getMessage(userId: number) {
 
 export async function getMessageWithUser(userId: number,receiverId: number) {
     const query = {
-        text: "SELECT * FROM messages WHERE senderId = $1 AND receiverId = $2 OR senderId = $2 AND receiverId = $1;",
+        text: "SELECT senderid as sender, receiverid as receiver,createdat as date,content FROM messages WHERE (senderId = $1 AND receiverId = $2) OR (senderId = $2 AND receiverId = $1);",
         values: [userId,receiverId]
     };
 

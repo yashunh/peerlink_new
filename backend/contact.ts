@@ -53,3 +53,18 @@ export async function searchContact(username: string) {
         throw err;
     }
 }
+
+export async function getUser(userId: number) {
+    const query = {
+        text: "SELECT id,username FROM users WHERE id = $1;",
+        values: [userId]
+    };
+
+    try {
+        const result = await pool.query(query);
+        return result.rows[0];
+    } catch (err) {
+        console.error("Error searching contact:", err);
+        throw err;
+    }
+}

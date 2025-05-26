@@ -36,7 +36,7 @@ userRouter.post("/signin", async (req, res): Promise<any> => {
     token,
     user: {
       id: response.rows[0].id,
-      name: response.rows[0].username
+      username: response.rows[0].username
     }
   })
 })
@@ -70,7 +70,7 @@ userRouter.post("/signup", async (req, res): Promise<any> => {
     token,
     user: {
       id: newUser.rows[0].id,
-      name: newUser.rows[0].username
+      username: newUser.rows[0].username
     }
   })
 })

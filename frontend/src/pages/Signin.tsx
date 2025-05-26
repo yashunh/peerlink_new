@@ -57,7 +57,6 @@ export default function Signin() {
                                         const response = await axios.post("http://localhost:3000/signin", {
                                             inputs
                                         })
-                                        console.log(response)
                                         if (response.data.msg == "User does not exist") {
                                             alert("User does not exist Signup")
                                         }
@@ -66,7 +65,6 @@ export default function Signin() {
                                         }
                                         else {
                                             window.localStorage.setItem("token", response.data.token)
-                                            console.log(response.data)
                                             setToken(response.data.token)
                                             setUser(response.data.user)
                                             navigate("/home")
