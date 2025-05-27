@@ -33,8 +33,9 @@ export default function Homepage() {
   const navigate = useNavigate()
   const [user, setUser] = useAtom(userAtom)
   const [token] = useAtom(tokenAtom)
-  const [message, setMessage] = useAtom(messageAtom)
-  
+  const [, setMessage] = useAtom(messageAtom)
+  const [, setContacts] = useAtom(contactAtom)
+
   useEffect(() => {
     if (!token || token == "Unknown") {
       window.localStorage.removeItem("token")
@@ -50,38 +51,54 @@ export default function Homepage() {
         socket?.emit("get user")
       }
       socket?.emit("get contacts")
+
+      socket?.on("set user", (user: User) => {
+        setUser(user)
+      })
+
+      socket?.on("set messages", (messages: Message[]) => {
+        setMessage(messages)
+        console.log("set msg")
+      })
+
+      socket?.on("message send", (msg: Message) => {
+        setMessage((prev) => [...prev, msg])
+        setContacts(prev =>
+          prev.map(c =>
+            (c.id === msg.receiver || c.id === msg.sender)
+              ? { ...c, lastmessage: msg.content, lastmessagetime: msg.date }
+              : c
+          )
+        )
+      })
+
+      socket?.on("message received", (msg: Message) => {
+        setMessage((prev) => [...prev, msg])
+        setContacts(prev =>
+          prev.map(c =>
+            (c.id === msg.receiver || c.id === msg.sender)
+              ? { ...c, lastmessage: msg.content, lastmessagetime: msg.date }
+              : c
+          )
+        )
+      })
+
+
+      socket?.on("set contacts", (contacts: Contact[]) => {
+        setContacts(contacts)
+      })
+
+      socket?.on("auth error", (err) => {
+        window.alert("auth error")
+        console.log(err)
+      })
+
     } catch (err) {
       window.localStorage.removeItem("token")
       navigate("/signin");
     }
   }, [])
 
-  socket?.on("set user", (user: User) => {
-    setUser(user)
-  })
-
-  socket?.on("set messages", (messages: Message[]) => {
-    setMessage(messages)
-  })
-
-  socket?.on("message send", (msg: Message) => {
-    setMessage([...message, msg])
-  })
-
-  socket?.on("message received", (msg: Message) => {
-    setMessage([...message, msg])
-  })
-
-  const [, setContacts] = useAtom(contactAtom)
-
-  socket?.on("set contacts", (contacts: Contact[]) => {
-    setContacts(contacts)
-  })
-
-  socket?.on("auth error", (err) => {
-    window.alert("auth error")
-    console.log(err)
-  })
   return (
     <div>
       <div className="bg-black min-h-screen">

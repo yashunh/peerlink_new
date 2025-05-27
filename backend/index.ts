@@ -64,7 +64,7 @@ io.use((socket, next) => {
       const sockets = await io.fetchSockets()
       for (let i of sockets) {
         if (i.id == users.get(receiverId)) {
-          i.emit("message recieved", result)
+          i.emit("message received", result)
         }
       }
     }
