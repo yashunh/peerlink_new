@@ -30,7 +30,6 @@ export default function Chat() {
                             })}></input>
                             <div className="m-2 w-3" onClick={() => {
                                 socket?.emit("send message", sendMessage?.receiver, sendMessage?.content)
-                                console.log("click")
                                 inputRef.current ? inputRef.current.value = '' : ""
                             }}>
                                 <IoSend />

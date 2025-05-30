@@ -58,7 +58,6 @@ io.use((socket, next) => {
 
   socket.on("send message", async (receiverId: number, message: string) => {
     const result = await sendMessage(userId, receiverId, message)
-    console.log(result)
     if (users.has(receiverId)) {
       console.log("online")
       const sockets = await io.fetchSockets()

@@ -1,7 +1,8 @@
 import Avatar from "./Avatar";
-import { useAtom } from "jotai";
-import { receiverAtom, sortedContactAtom } from "../store/atom/atoms";
+import { useAtom, useAtomValue } from "jotai";
+import { contactAtom, receiverAtom, sortedContactAtom } from "../store/atom/atoms";
 import { socket } from "../pages/Homepage";
+import { useEffect } from "react";
 
 type Contact = {
     id: number,
@@ -11,8 +12,13 @@ type Contact = {
 }
 
 export default function Contact() {
-    const [contacts] = useAtom<Contact[]>(sortedContactAtom)
+    let contacts = useAtomValue<Contact[]>(sortedContactAtom)
+    const [unsorttedContact] = useAtom(contactAtom)
     const [, setReceiver] = useAtom(receiverAtom)
+
+    useEffect(()=>{
+        contacts = useAtomValue(sortedContactAtom)
+    },[unsorttedContact])
     return (
         <div className="m-1 border-r border-slate-800 h-[calc(100vh-83px)] overflow-y-auto overflow-x-hidden">
             {/* <div className="grid grid-cols-12 text-white border rounded-2xl border-slate-800 justify-enter items-center px-2">

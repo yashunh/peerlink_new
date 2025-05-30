@@ -7,6 +7,7 @@ import { contactAtom, messageAtom, tokenAtom, userAtom } from "../store/atom/ato
 import Chat from "../components/Chat";
 import { Socket } from "socket.io-client"
 import { useEffect } from "react";
+import { flushSync } from "react-dom";
 
 export let socket: Socket
 
@@ -58,29 +59,32 @@ export default function Homepage() {
 
       socket?.on("set messages", (messages: Message[]) => {
         setMessage(messages)
-        console.log("set msg")
       })
 
       socket?.on("message send", (msg: Message) => {
         setMessage((prev) => [...prev, msg])
-        setContacts(prev =>
-          prev.map(c =>
-            (c.id === msg.receiver || c.id === msg.sender)
-              ? { ...c, lastmessage: msg.content, lastmessagetime: msg.date }
-              : c
+        flushSync(() => {
+          setContacts(prev =>
+            prev.map(c =>
+              (c.id === msg.receiver || c.id === msg.sender)
+                ? { ...c, lastmessage: msg.content, lastmessagetime: msg.date }
+                : c
+            )
           )
-        )
+        })
       })
 
       socket?.on("message received", (msg: Message) => {
         setMessage((prev) => [...prev, msg])
-        setContacts(prev =>
-          prev.map(c =>
-            (c.id === msg.receiver || c.id === msg.sender)
-              ? { ...c, lastmessage: msg.content, lastmessagetime: msg.date }
-              : c
+        flushSync(() => {
+          setContacts(prev =>
+            prev.map(c =>
+              (c.id === msg.receiver || c.id === msg.sender)
+                ? { ...c, lastmessage: msg.content, lastmessagetime: msg.date }
+                : c
+            )
           )
-        )
+        })
       })
 
 

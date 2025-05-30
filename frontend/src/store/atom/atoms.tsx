@@ -43,9 +43,9 @@ export const receiverAtom = atom<User>()
 export const contactAtom = atom<Contact[]>([])
 
 export const sortedContactAtom = atom((get) => {
-  const contacts = [...get(contactAtom)];
-  return contacts
-    .sort((a, b) => new Date(b.lastmessagetime).getTime() - new Date(a.lastmessagetime).getTime());
+    const contacts = [...get(contactAtom)];
+    return contacts
+        .sort((a, b) => new Date(b.lastmessagetime).getTime() - new Date(a.lastmessagetime).getTime());
 });
 
 export const searchAtom = atom<User[]>([])

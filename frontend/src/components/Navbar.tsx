@@ -26,9 +26,7 @@ export default function Navbar() {
                         <input className="p-2 w-full col-span-11 outline-none text-center items-center" placeholder="enter username to search" type="text" id="searchBar" onChange={(e) => setUsername(e.target.value)}></input>
                         <div className="col-span-1 w-3" onClick={() => {
                             socket?.emit("search user", username)
-                            console.log("click")
                             socket?.on("found user", (users: User[]) => {
-                                console.log(users)
                                 setSearchResult(users)
                             })
                         }}>
@@ -39,7 +37,6 @@ export default function Navbar() {
                         {searchResult ? <div className="text-white border border-t-0 rounded-2xl border-slate-800 justify-center items-center px-2 w-lg">
                             {searchResult.map((user,i) => <div key={i+" search"} onClick={() => {
                                 setReceiver(user)
-                                console.log(user)
                             }}>{user.username}</div>)}
                         </div> : <div></div>}
                     </div>
